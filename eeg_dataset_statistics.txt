@@ -1,0 +1,9 @@
+Dataset Statistics: Largest Alzheimer EEG dataset
+
+Total number of subjects: 241
+Number of Healthy Controls (HC): 78
+Number of Alzheimer’s Disease (AD) subjects: 122
+Number of EEG channels: 19
+Sampling rate (Hz): 128
+Recording duration: 101,916 seconds total (~28.3 hours). Average duration per subject is ~423 seconds.
+Shape of the data matrix: 19 Channels × 128 Time samples per epoch.
