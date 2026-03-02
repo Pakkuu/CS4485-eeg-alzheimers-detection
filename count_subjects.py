@@ -1,6 +1,10 @@
 import numpy as np
+import kagglehub
+import os
 
-path = "/Users/ajayalluri/.cache/kagglehub/datasets/codingyodha/largest-alzheimer-eeg-dataset/versions/1/integrated_eeg_dataset.npz"
+# Download the dataset and get the path
+dataset_dir = kagglehub.dataset_download("codingyodha/largest-alzheimer-eeg-dataset")
+path = os.path.join(dataset_dir, "integrated_eeg_dataset.npz")
 data = np.load(path, allow_pickle=True)
 y = data['y_labels']
 

@@ -1,0 +1,22 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Dataset files
+alzheimer_eeg_data/
+*.npz
+*.csv
