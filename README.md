@@ -57,10 +57,26 @@ To see a detailed breakdown of subject counts per label:
 python count_subjects.py
 ```
 
+### Task 1: 10-Second EEG Plot
+To generate the Task 1 figure (10 seconds of EEG from channel P4 for HC vs AD):
+```bash
+python plot_10s_eeg_task1.py
+```
+Saves to `figures/eeg_10s_hc_vs_ad_p4.png`.
+
 ### Visual Exploration
 For interactive data analysis and signal visualization, use the provided Jupyter notebooks:
 - [explore_alzheimer_eeg_dataset.ipynb](explore_alzheimer_eeg_dataset.ipynb)
 - [eeg_dataset_statistics.ipynb](eeg_dataset_statistics.ipynb)
+
+### Baseline machine learning (HC vs AD)
+After generating `eeg_band_analysis_csv/eeg_band_power_subject_level.csv` (from the frequency-band notebook), run:
+
+```bash
+python train_baseline_models.py
+```
+
+This trains **Logistic Regression** and **Random Forest** with **stratified k-fold cross-validation** at the subject level and prints accuracy, ROC-AUC, sensitivity, and specificity. FTD subjects are excluded (binary HC vs AD only).
 
 ### Frequency Band Analysis
 For full Welch PSD feature extraction and AD vs HC statistical comparison:
@@ -109,6 +125,22 @@ The notebook `eeg_frequency_band_analysis.ipynb` implements a full EEG frequency
 | `band_power_heatmap.png` | Heatmap of mean band power by channel and group |
 | `band_power_relative_diff_heatmap.png` | Heatmap of relative (%) band power difference: (AD − HC) / HC |
 
+## 📋 Weekly reports
+
+Team progress reports use the format **Member | Done | Planned | Roadblocks**. Latest:
+
+- [WEEKLY_REPORT_Mar_15_Mar_21.md](WEEKLY_REPORT_Mar_15_Mar_21.md) — post–Midterm week; baseline ML kickoff
+
+## 📄 Midterm Project Proposal
+
+The [MIDTERM_PROJECT_PROPOSAL.md](MIDTERM_PROJECT_PROPOSAL.md) document contains the full project proposal/requirements, including:
+- Task 1, 2, and 3 results
+- Future ML training roadmap
+- Project management (communication plan, risk analysis, progress tracking, performance metrics)
+- Ethics and leadership (ethical aspects, team roles, peer review)
+
+**To export as PDF:** Run `python md_to_pdf.py` — it generates `MIDTERM_PROJECT_PROPOSAL.html`. Open the HTML in your browser, press **Ctrl+P**, then choose **Save as PDF** or **Microsoft Print to PDF**.
+
 ## 📁 Source Files
 - `eeg_frequency_band_analysis.ipynb`: Welch PSD pipeline, band power feature extraction, and AD vs HC statistical analysis.
 - `explore_alzheimer_eeg_dataset.ipynb`: Interactive EEG signal visualization and dataset exploration.
@@ -116,4 +148,5 @@ The notebook `eeg_frequency_band_analysis.ipynb` implements a full EEG frequency
 - `inspect_dataset.py`: Main reporting tool for dataset metrics and matrix shapes.
 - `count_subjects.py`: Script to calculate unique subjects across different diagnostic labels.
 - `download_dataset.py`: Utility to ensure the Kaggle dataset is synced locally.
+- `train_baseline_models.py`: Subject-level HC vs AD baseline classifiers (stratified CV).
 - `requirements.txt`: Project dependencies.

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midterm Project Proposal - EEG Alzheimer's Detection</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 800px; margin: 2em auto; padding: 0 2em; line-height: 1.6; color: #333; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 0.3em; }
+    h2 { margin-top: 1.5em; color: #444; }
+    h3 { margin-top: 1.2em; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 0.75em; text-align: left; }
+    th { background: #f5f5f5; font-weight: 600; }
+    code { background: #f5f5f5; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #f5f5f5; padding: 1em; overflow-x: auto; border-radius: 4px; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
+    @media print { body { max-width: none; } }
+  </style>
+</head>
+<body>
+<h1 id="midterm-project-proposal-requirements-document">Midterm Project Proposal / Requirements Document<a class="headerlink" href="#midterm-project-proposal-requirements-document" title="Permanent link">&para;</a></h1>
+<h2 id="eeg-based-alzheimers-disease-detection">EEG-Based Alzheimer's Disease Detection<a class="headerlink" href="#eeg-based-alzheimers-disease-detection" title="Permanent link">&para;</a></h2>
+<p><strong>CS 4485 Capstone Project</strong><br />
+<strong>Team:</strong> Venkatasai Gudisa, Ajay Alluri, Ethan Varghese, Aashay Vishwakarma, Venkat Sai Eshwar Varma Sagi, Ram Gudur<br />
+<strong>Repository:</strong> <a href="https://github.com/Pakkuu/CS4485-eeg-alzheimers-detection">CS4485-eeg-alzheimers-detection</a></p>
+<hr />
+<h2 id="1-executive-summary-and-project-objectives">1. Executive Summary and Project Objectives<a class="headerlink" href="#1-executive-summary-and-project-objectives" title="Permanent link">&para;</a></h2>
+<h3 id="11-summary">1.1 Summary<a class="headerlink" href="#11-summary" title="Permanent link">&para;</a></h3>
+<p>This capstone project aims to develop a lightweight machine learning system for detecting Alzheimer's Disease (AD) from electroencephalogram (EEG) signals. We use the Largest Alzheimer EEG Dataset from Kaggle to extract frequency-domain features, compare AD and Healthy Control (HC) subjects statistically, and build a deployable classification model. The work integrates neuroscience fundamentals, signal processing, and machine learning to support research on non-invasive AD biomarkers.</p>
+<h3 id="12-project-objectives-professor-assigned">1.2 Project Objectives (Professor-Assigned)<a class="headerlink" href="#12-project-objectives-professor-assigned" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Learn the fundamentals of Alzheimer's disease</strong> including how it affects brain structure</li>
+<li><strong>Understand EEG as a brain monitoring tool</strong></li>
+<li><strong>Analyze changes in brain activity</strong> between AD and healthy subjects</li>
+<li><strong>Develop a lightweight machine learning model</strong> for AD detection</li>
+<li><strong>Evaluate system performance</strong> using appropriate metrics and validation strategies</li>
+</ol>
+<hr />
+<h2 id="2-task-1-results-understanding-the-raw-eeg-signal">2. Task 1 Results — Understanding the Raw EEG Signal<a class="headerlink" href="#2-task-1-results-understanding-the-raw-eeg-signal" title="Permanent link">&para;</a></h2>
+<h3 id="21-dataset-description">2.1 Dataset Description<a class="headerlink" href="#21-dataset-description" title="Permanent link">&para;</a></h3>
+<p>We use the <a href="https://www.kaggle.com/datasets/codingyodha/largest-alzheimer-eeg-dataset">Largest Alzheimer EEG Dataset</a> from Kaggle, an integrated collection of EEG recordings standardized for Alzheimer's research.</p>
+<h3 id="22-dataset-statistics">2.2 Dataset Statistics<a class="headerlink" href="#22-dataset-statistics" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total number of subjects</td>
+<td>241</td>
+</tr>
+<tr>
+<td>Healthy Controls (HC)</td>
+<td>78</td>
+</tr>
+<tr>
+<td>Alzheimer's Disease (AD)</td>
+<td>122</td>
+</tr>
+<tr>
+<td>Frontotemporal Dementia (FTD)</td>
+<td>41</td>
+</tr>
+<tr>
+<td>Number of EEG channels</td>
+<td>19</td>
+</tr>
+<tr>
+<td>Sampling rate</td>
+<td>128 Hz</td>
+</tr>
+<tr>
+<td>Recording duration</td>
+<td>101,916 seconds (~28.3 hours total)</td>
+</tr>
+<tr>
+<td>Average duration per subject</td>
+<td>~423 seconds</td>
+</tr>
+<tr>
+<td>Shape of data matrix (per epoch)</td>
+<td>19 Channels × 128 Time samples</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Labels:</strong> <code>0.0</code> = Healthy Control (HC), <code>1.0</code> = Alzheimer's Disease (AD), <code>2.0</code> = Frontotemporal Dementia (FTD)</p>
+<p><strong>Note:</strong> Class imbalance exists (78 HC vs 122 AD). This will be addressed in modeling via oversampling, class weights, or stratified sampling.</p>
+<h3 id="23-10-second-eeg-plot">2.3 10-Second EEG Plot<a class="headerlink" href="#23-10-second-eeg-plot" title="Permanent link">&para;</a></h3>
+<p>We selected one Healthy Control subject and one Alzheimer's Disease subject, using the same posterior channel (P4) for both:</p>
+<ul>
+<li><strong>HC subject:</strong> AD-Auditory_10  </li>
+<li><strong>AD subject:</strong> AD-Auditory_17  </li>
+<li><strong>Channel:</strong> P4 (posterior parietal, 10-20 system)</li>
+</ul>
+<p>A 10-second segment of EEG signal was plotted for both subjects with Time on the x-axis and Amplitude on the y-axis. The plot represents electrical brain activity from one cortical region over time. Visual analysis showed differences in signal characteristics consistent with known AD EEG biomarkers (e.g., slowing, increased variability).</p>
+<hr />
+<h2 id="3-task-2-results-frequency-analysis-and-band-power">3. Task 2 Results — Frequency Analysis and Band Power<a class="headerlink" href="#3-task-2-results-frequency-analysis-and-band-power" title="Permanent link">&para;</a></h2>
+<h3 id="31-methodology">3.1 Methodology<a class="headerlink" href="#31-methodology" title="Permanent link">&para;</a></h3>
+<p><strong>Power Spectral Density (PSD):</strong> We compute PSD using the <strong>Welch method</strong> via <code>scipy.signal.welch</code>:</p>
+<ol>
+<li>Splits the signal into overlapping segments (50% overlap)</li>
+<li>Applies a Hann window to each segment</li>
+<li>Computes the Fast Fourier Transform (FFT) of each windowed segment</li>
+<li>Averages power across segments to produce a stable spectral estimate</li>
+</ol>
+<p><strong>Parameters:</strong> 1-second Hann window, 50% overlap, 1 Hz frequency resolution.</p>
+<p><strong>Frequency Bands:</strong> Average power was computed within:</p>
+<table>
+<thead>
+<tr>
+<th>Band</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delta</td>
+<td>1–4 Hz</td>
+</tr>
+<tr>
+<td>Theta</td>
+<td>4–8 Hz</td>
+</tr>
+<tr>
+<td>Alpha</td>
+<td>8–13 Hz</td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>13–30 Hz</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Feature aggregation:</strong> Per-epoch band powers were averaged across all epochs per subject to produce stable per-subject, per-channel, per-band features.</p>
+<h3 id="32-band-power-table-sample-channels">3.2 Band Power Table (Sample Channels)<a class="headerlink" href="#32-band-power-table-sample-channels" title="Permanent link">&para;</a></h3>
+<p>Mean band power (µV²/Hz) for AD vs HC at selected channels:</p>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Delta (AD)</th>
+<th>Delta (HC)</th>
+<th>Theta (AD)</th>
+<th>Theta (HC)</th>
+<th>Alpha (AD)</th>
+<th>Alpha (HC)</th>
+<th>Beta (AD)</th>
+<th>Beta (HC)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fp1</td>
+<td>50.77</td>
+<td>13.22</td>
+<td>22.07</td>
+<td>5.35</td>
+<td>7.88</td>
+<td>3.90</td>
+<td>9.63</td>
+<td>3.01</td>
+</tr>
+<tr>
+<td>Fp2</td>
+<td>52.19</td>
+<td>12.64</td>
+<td>22.61</td>
+<td>5.14</td>
+<td>8.08</td>
+<td>3.90</td>
+<td>8.44</td>
+<td>4.20</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>22.65</td>
+<td>9.19</td>
+<td>14.08</td>
+<td>3.82</td>
+<td>7.05</td>
+<td>3.86</td>
+<td>7.41</td>
+<td>6.94</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>11.19</td>
+<td>8.94</td>
+<td>11.61</td>
+<td>4.03</td>
+<td>6.25</td>
+<td>5.68</td>
+<td>15.95</td>
+<td>11.55</td>
+</tr>
+<tr>
+<td>Fz</td>
+<td>11.25</td>
+<td>13.64</td>
+<td>15.00</td>
+<td>8.15</td>
+<td>9.70</td>
+<td>27.86</td>
+<td>6.76</td>
+<td>9.17</td>
+</tr>
+<tr>
+<td>Cz</td>
+<td>19.74</td>
+<td>14.44</td>
+<td>15.67</td>
+<td>8.32</td>
+<td>12.28</td>
+<td>41.73</td>
+<td>5.82</td>
+<td>10.37</td>
+</tr>
+<tr>
+<td>Pz</td>
+<td>14.54</td>
+<td>15.15</td>
+<td>16.37</td>
+<td>9.03</td>
+<td>13.37</td>
+<td>47.41</td>
+<td>6.94</td>
+<td>10.46</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-observations-delta-theta-and-alpha-power-in-ad-vs-hc">3.3 Observations: Delta, Theta, and Alpha Power in AD vs HC<a class="headerlink" href="#33-observations-delta-theta-and-alpha-power-in-ad-vs-hc" title="Permanent link">&para;</a></h3>
+<p><strong>Delta (1–4 Hz):</strong> Elevated in AD at frontal (Fp1, Fp2), central (C3, C4), and parietal (P3) channels. Midline and posterior channels (Fz, Pz) show no significant difference or slight HC elevation.</p>
+<p><strong>Theta (4–8 Hz):</strong> Consistently elevated in AD across almost all channels. Strongest effects at frontal (Fp1, Fp2), central (C3, C4), parietal (P3, P4), and temporal (T3–T6) regions. This is one of the most robust discriminative bands.</p>
+<p><strong>Alpha (8–13 Hz):</strong> Reduced in AD at midline channels (Fz, Cz, Pz) and temporal channels (T3). At frontal and central regions (Fp1–F4, C3, C4), Alpha is actually higher in AD in some cases. The posterior/midline Alpha reduction aligns with known AD EEG biomarkers (posterior dominant rhythm slowing).</p>
+<p><strong>Summary:</strong> Our findings align with established AD EEG literature: increased Delta and Theta (slowing), and reduced Alpha at posterior/midline regions. These band power differences provide a strong feature set for machine learning classification.</p>
+<hr />
+<h2 id="4-task-3-results-statistical-comparison-between-groups">4. Task 3 Results — Statistical Comparison Between Groups<a class="headerlink" href="#4-task-3-results-statistical-comparison-between-groups" title="Permanent link">&para;</a></h2>
+<h3 id="41-subject-level-band-power">4.1 Subject-Level Band Power<a class="headerlink" href="#41-subject-level-band-power" title="Permanent link">&para;</a></h3>
+<p>We computed mean band power per subject by averaging across all 19 channels. Each subject has one representative value per band (Delta, Theta, Alpha, Beta). The resulting table is stored in <code>eeg_band_analysis_csv/eeg_band_power_subject_level.csv</code>.</p>
+<h3 id="42-boxplots">4.2 Boxplots<a class="headerlink" href="#42-boxplots" title="Permanent link">&para;</a></h3>
+<p>We generated boxplots comparing AD vs HC for:</p>
+<ul>
+<li><strong>Alpha power</strong> (AD vs Control)</li>
+<li><strong>Theta power</strong> (AD vs Control)</li>
+<li><strong>Delta power</strong> (AD vs Control)</li>
+<li><strong>Beta power</strong> (AD vs Control)</li>
+</ul>
+<p>These are produced by <code>eeg_frequency_band_analysis.ipynb</code> and saved as <code>figures/band_power_boxplot_subjects.png</code>.</p>
+<h3 id="43-statistical-testing">4.3 Statistical Testing<a class="headerlink" href="#43-statistical-testing" title="Permanent link">&para;</a></h3>
+<p>We performed <strong>Welch's independent-samples t-test</strong> (unequal variances) at each channel × band combination to compare AD vs HC. Results are in <code>eeg_band_analysis_csv/eeg_band_power_stats.csv</code>.</p>
+<p><strong>Findings:</strong></p>
+<ul>
+<li><strong>Theta:</strong> Statistically significant (p &lt; 0.05) at all 19 channels. Consistently elevated in AD.</li>
+<li><strong>Delta:</strong> Significant at frontal (Fp1, Fp2), central (C3, C4), parietal (P3), and several other channels. Not significant at P4, O1, O2, F7, F8, T3, T4, T5, T6, Fz, Pz.</li>
+<li><strong>Alpha:</strong> Significant reduction in AD at midline (Fz, Cz, Pz) and temporal (T3). Significant increase in AD at frontal (Fp1, Fp2, F3, F4) and central (C3, C4, O2).</li>
+<li><strong>Beta:</strong> Mixed; significant at frontal and central channels (AD higher), and at Cz (AD lower).</li>
+</ul>
+<p>The statistical results support the use of band power features for AD vs HC classification.</p>
+<hr />
+<h2 id="5-future-work-ml-training-roadmap-rest-of-semester">5. Future Work — ML Training Roadmap (Rest of Semester)<a class="headerlink" href="#5-future-work-ml-training-roadmap-rest-of-semester" title="Permanent link">&para;</a></h2>
+<h3 id="51-data-pipeline-already-in-place">5.1 Data Pipeline (Already in Place)<a class="headerlink" href="#51-data-pipeline-already-in-place" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Preprocessing:</strong> Bandpass filtering and artifact rejection (Ethan Varghese)</li>
+<li><strong>Epoching:</strong> Signal segmented into fixed 1-second windows</li>
+<li><strong>Feature extraction:</strong> Welch PSD → band power (Delta, Theta, Alpha, Beta) per channel</li>
+</ul>
+<h3 id="52-feature-set">5.2 Feature Set<a class="headerlink" href="#52-feature-set" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Primary:</strong> Per-channel band powers → 19 channels × 4 bands = <strong>76 features</strong></li>
+<li><strong>Optional:</strong> Connectivity measures, entropy, or other qEEG features for model improvement</li>
+</ul>
+<h3 id="53-model-strategy-lightweight">5.3 Model Strategy (Lightweight)<a class="headerlink" href="#53-model-strategy-lightweight" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Baseline models:</strong> Logistic Regression, Random Forest, XGBoost</li>
+<li><strong>Optional:</strong> Shallow neural network or 1D CNN if compute allows</li>
+<li><strong>Focus:</strong> Interpretability, deployability, and low computational cost (lightweight)</li>
+</ul>
+<h3 id="54-evaluation">5.4 Evaluation<a class="headerlink" href="#54-evaluation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Metrics:</strong> Accuracy, AUC-ROC, Sensitivity, Specificity</li>
+<li><strong>Validation:</strong> Subject-level stratified k-fold cross-validation (avoid epoch-level data leakage)</li>
+<li><strong>Benchmarking:</strong> Compare against literature (Ram Gudur's compiled references)</li>
+</ul>
+<h3 id="55-timeline-rest-of-semester">5.5 Timeline (Rest of Semester)<a class="headerlink" href="#55-timeline-rest-of-semester" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Weeks</th>
+<th>Activities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td>1–2</td>
+<td>Train baseline models, hyperparameter tuning</td>
+</tr>
+<tr>
+<td>Comparison</td>
+<td>3–4</td>
+<td>Feature selection, model comparison</td>
+</tr>
+<tr>
+<td>Finalization</td>
+<td>5–6</td>
+<td>Final model selection, evaluation, documentation</td>
+</tr>
+<tr>
+<td>Optional</td>
+<td>As needed</td>
+<td>Validate on OpenNeuro ds004504 once pipeline is stable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-project-management">6. Project Management<a class="headerlink" href="#6-project-management" title="Permanent link">&para;</a></h2>
+<h3 id="61-communication-plan">6.1 Communication Plan<a class="headerlink" href="#61-communication-plan" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Tools:</strong> Microsoft Teams, GitHub, Google Colab</li>
+<li><strong>Cadence:</strong> Weekly team meetings; async updates via repository commits and Teams chat</li>
+<li><strong>Documentation:</strong> Shared README, notebooks, and this proposal; all code in GitHub</li>
+<li><strong>Meeting link:</strong> <a href="https://teams.microsoft.com/meet/27114829884284?p=PAiYn6TWeg0HQTxtNM">Teams</a></li>
+</ul>
+<h3 id="62-risk-analysis">6.2 Risk Analysis<a class="headerlink" href="#62-risk-analysis" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class imbalance (78 HC vs 122 AD)</td>
+<td>Oversampling, class weights, or stratified sampling in training</td>
+</tr>
+<tr>
+<td>Data quality / artifact contamination</td>
+<td>Preprocessing checks; artifact rejection already implemented</td>
+</tr>
+<tr>
+<td>Limited journal access</td>
+<td>Use open-access sources; Ram's glossary and reference doc</td>
+</tr>
+<tr>
+<td>Learning curve on EEG/neuroscience</td>
+<td>Shared glossary, cheat sheet, and literature summaries</td>
+</tr>
+<tr>
+<td>Subject-level data leakage</td>
+<td>Strict subject-level train/test splits; no epoch-level leakage</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-progress-tracking-plan">6.3 Progress Tracking Plan<a class="headerlink" href="#63-progress-tracking-plan" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Weekly reports:</strong> Submitted per professor requirements</li>
+<li><strong>GitHub:</strong> Issues and milestones for task tracking</li>
+<li><strong>Key deadlines:</strong> Midterm proposal (this document), final deliverable</li>
+</ul>
+<h3 id="64-project-performance-metrics">6.4 Project Performance Metrics<a class="headerlink" href="#64-project-performance-metrics" title="Permanent link">&para;</a></h3>
+<p><strong>Technical metrics:</strong>
+- Model accuracy, AUC-ROC, sensitivity, specificity
+- Feature importance and interpretability</p>
+<p><strong>Process metrics:</strong>
+- Task completion rate
+- Meeting attendance and participation
+- Documentation currency and code quality</p>
+<hr />
+<h2 id="7-ethics-and-leadership">7. Ethics and Leadership<a class="headerlink" href="#7-ethics-and-leadership" title="Permanent link">&para;</a></h2>
+<h3 id="71-ethical-aspects">7.1 Ethical Aspects<a class="headerlink" href="#71-ethical-aspects" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Data use:</strong> We use a public, pre-anonymized EEG dataset. No new human subjects are recruited.</li>
+<li><strong>Privacy:</strong> The Kaggle dataset is de-identified; we do not handle identifiable health information.</li>
+<li><strong>Responsible AI:</strong> The model is for research and education only. It is not intended for clinical diagnosis. Any future deployment would require regulatory and clinical validation.</li>
+<li><strong>Bias and fairness:</strong> We acknowledge class imbalance and demographic limitations of the dataset. We will report these limitations in our final documentation.</li>
+</ul>
+<h3 id="72-team-roles">7.2 Team Roles<a class="headerlink" href="#72-team-roles" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Primary Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Venkatasai Gudisa</td>
+<td>Signal visualization, EEG plots, frequency band analysis</td>
+</tr>
+<tr>
+<td>Ajay Alluri</td>
+<td>Dataset statistics, data quality, class distribution analysis</td>
+</tr>
+<tr>
+<td>Ethan Varghese</td>
+<td>Repository setup, preprocessing, bandpass filter, artifact rejection, epoched data</td>
+</tr>
+<tr>
+<td>Aashay Vishwakarma</td>
+<td>Feature extraction, PSD/band power pipeline</td>
+</tr>
+<tr>
+<td>Venkat Sai Eshwar Varma Sagi</td>
+<td>Analysis, AD biomarker linkage, visualization</td>
+</tr>
+<tr>
+<td>Ram Gudur</td>
+<td>Literature review, qEEG biomarkers, ML approaches, evaluation metrics</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-leadership-aspects-for-peer-review">7.3 Leadership Aspects for Peer Review<a class="headerlink" href="#73-leadership-aspects-for-peer-review" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Shared leadership:</strong> Task leads rotate by deliverable; each member owns specific components</li>
+<li><strong>Peer feedback:</strong> Regular review of contributions and collaboration during meetings</li>
+<li><strong>Decision-making:</strong> Consensus on major choices; escalation to professor if needed</li>
+<li><strong>Conflict resolution:</strong> Open discussion; majority vote if necessary</li>
+</ul>
+<hr />
+<h2 id="8-references-and-appendix">8. References and Appendix<a class="headerlink" href="#8-references-and-appendix" title="Permanent link">&para;</a></h2>
+<h3 id="81-datasets">8.1 Datasets<a class="headerlink" href="#81-datasets" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Primary:</strong> <a href="https://www.kaggle.com/datasets/codingyodha/largest-alzheimer-eeg-dataset">Largest Alzheimer EEG Dataset</a> (Kaggle)</li>
+<li><strong>Optional:</strong> OpenNeuro ds004504 (88 subjects: 36 AD, 23 FTD, 29 HC; BIDS format)</li>
+</ul>
+<h3 id="82-repository">8.2 Repository<a class="headerlink" href="#82-repository" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://github.com/Pakkuu/CS4485-eeg-alzheimers-detection">CS4485-eeg-alzheimers-detection</a></li>
+</ul>
+<h3 id="83-key-project-files">8.3 Key Project Files<a class="headerlink" href="#83-key-project-files" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eeg_dataset_statistics.ipynb</code></td>
+<td>Dataset statistics and summary</td>
+</tr>
+<tr>
+<td><code>eeg_frequency_band_analysis.ipynb</code></td>
+<td>Welch PSD, band power extraction, statistical comparison</td>
+</tr>
+<tr>
+<td><code>explore_alzheimer_eeg_dataset.ipynb</code></td>
+<td>Interactive EEG exploration</td>
+</tr>
+<tr>
+<td><code>eeg_band_analysis_csv/eeg_band_power_stats.csv</code></td>
+<td>T-test results per channel × band</td>
+</tr>
+<tr>
+<td><code>eeg_band_analysis_csv/eeg_band_power_subject_level.csv</code></td>
+<td>Subject-level band power features</td>
+</tr>
+</tbody>
+</table>
+<h3 id="84-literature">8.4 Literature<a class="headerlink" href="#84-literature" title="Permanent link">&para;</a></h3>
+<p>Key papers and references compiled by Ram Gudur during the literature review phase support our methodology and will be cited in the final report.</p>
+</body>
+</html>
