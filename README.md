@@ -78,6 +78,19 @@ python train_baseline_models.py
 
 This trains **Logistic Regression** and **Random Forest** with **stratified k-fold cross-validation** at the subject level and prints accuracy, ROC-AUC, sensitivity, and specificity. FTD subjects are excluded (binary HC vs AD only).
 
+### ML model (76 features; pipeline already generated)
+If you already have the precomputed arrays from the feature extraction pipeline:
+- `eeg_subject_features.npy` (shape `(n_subjects, 19, 4)`)
+- `eeg_subject_groups.npy` (labels `'HC'`, `'AD'`, `'FTD'`)
+
+You can train a lightweight model using the full **19×4 = 76** feature set (flattened), with subject-level stratified CV and saved artifacts:
+
+```bash
+python3 train_ml_model.py --model logreg
+```
+
+Artifacts (metrics JSON + fitted model `.joblib`) are saved under `artifacts/` by default.
+
 ### Frequency Band Analysis
 For full Welch PSD feature extraction and AD vs HC statistical comparison:
 - [eeg_frequency_band_analysis.ipynb](eeg_frequency_band_analysis.ipynb)

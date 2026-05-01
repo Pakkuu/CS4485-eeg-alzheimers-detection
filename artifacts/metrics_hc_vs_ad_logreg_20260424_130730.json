@@ -1,0 +1,25 @@
+{
+  "run_id": "20260424_130730",
+  "task": "hc_vs_ad",
+  "model": "logreg",
+  "folds": 5,
+  "seed": 42,
+  "n_subjects": 200,
+  "n_features": 76,
+  "metrics": {
+    "accuracy": 0.815,
+    "roc_auc": 0.9065783942833122,
+    "sensitivity": 0.7540983606557377,
+    "specificity": 0.9102564102564102,
+    "confusion_matrix": [
+      [
+        92,
+        30
+      ],
+      [
+        7,
+        71
+      ]
+    ]
+  }
+}
