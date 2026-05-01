@@ -20,3 +20,6 @@ build/
 alzheimer_eeg_data/
 *.npz
 *.csv
+
+# Local agent dependencies (do not commit)
+.deps/
